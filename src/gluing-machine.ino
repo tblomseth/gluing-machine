@@ -45,9 +45,9 @@ const int stepPinGlueArmStepper = mePort[ GLUE_ARM_STEPPER_PORT ].s2;//the Step 
 AccelStepper glueArmStepper( AccelStepper::DRIVER, stepPinGlueArmStepper, directionPinGlueArmStepper );
 
 /* Glue applicator servo */
-const int GLUE_INITIAL_POSITION = 45;
-const int GLUE_APPLICATION_POSITION = 75;
-const int GLUE_RAISED_POSITION = 45;
+const int GLUE_INITIAL_POSITION = 50;
+const int GLUE_APPLICATION_POSITION = 72;
+const int GLUE_RAISED_POSITION = 50;
 
 MePort glueServoPort(PORT_1);
 Servo glueServoDriver;  // create servo object to control a servo 
@@ -147,24 +147,7 @@ void loop() {
      break;
  
    case STATE_APPLY_GLUE_1:
-     if ( !isApplyingGlue ) {
-       glueServoDriver.write( GLUE_APPLICATION_POSITION );
-       delay( 300 );
-       isApplyingGlue = true;
-     } else if ( isApplyingGlue ) {
-        if ( !glueArmIsMoving ) {
-          glueArmStepper.moveTo( 0);
-          glueArmStepper.setMaxSpeed( GLUE_ARM_APPLICATION_SPEED );
-          glueArmIsMoving = true;
-        } else if ( glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
-          glueArmIsMoving = false;
-          glueServoDriver.write( GLUE_RAISED_POSITION );
-          isApplyingGlue = false;
-          fsmState = STATE_MOVE_TO_2;
-        } else {
-          glueArmStepper.run();
-        }
-     }
+     applyGlue( STATE_MOVE_TO_2 );
      break; 
      
    case STATE_MOVE_TO_2:
@@ -185,24 +168,7 @@ void loop() {
      break;
 
    case STATE_APPLY_GLUE_2:
-     if ( !isApplyingGlue ) {
-       glueServoDriver.write( GLUE_APPLICATION_POSITION );
-       delay( 300 );
-       isApplyingGlue = true;
-     } else if ( isApplyingGlue ) {
-        if ( !glueArmIsMoving ) {
-          glueArmStepper.moveTo( 0);
-          glueArmStepper.setMaxSpeed( GLUE_ARM_APPLICATION_SPEED );          
-          glueArmIsMoving = true;
-        } else if ( glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
-          glueArmIsMoving = false;
-          glueServoDriver.write( GLUE_RAISED_POSITION );
-          isApplyingGlue = false;
-          fsmState = STATE_MOVE_TO_3;
-        } else {
-          glueArmStepper.run();
-        }
-     }
+    applyGlue( STATE_MOVE_TO_3 );
      break; 
 
      case STATE_MOVE_TO_3:
@@ -223,24 +189,7 @@ void loop() {
        break;
 
    case STATE_APPLY_GLUE_3:
-     if ( !isApplyingGlue ) {
-       glueServoDriver.write( GLUE_APPLICATION_POSITION );
-       delay( 300 );
-       isApplyingGlue = true;
-     } else if ( isApplyingGlue ) {
-        if ( !glueArmIsMoving ) {
-          glueArmStepper.moveTo( 0);
-          glueArmStepper.setMaxSpeed( GLUE_ARM_APPLICATION_SPEED );
-          glueArmIsMoving = true;
-        } else if ( glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
-          glueArmIsMoving = false;
-          glueServoDriver.write( GLUE_RAISED_POSITION );
-          isApplyingGlue = false;
-          fsmState = STATE_MOVE_TO_4;
-        } else {
-          glueArmStepper.run();
-        }
-     }
+     applyGlue( STATE_MOVE_TO_4 );
      break; 
 
      case STATE_MOVE_TO_4:
@@ -261,24 +210,7 @@ void loop() {
        break;
 
    case STATE_APPLY_GLUE_4:
-     if ( !isApplyingGlue ) {
-       glueServoDriver.write( GLUE_APPLICATION_POSITION );
-       delay( 300 );
-       isApplyingGlue = true;
-     } else if ( isApplyingGlue ) {
-        if ( !glueArmIsMoving ) {
-          glueArmStepper.moveTo( 0);
-          glueArmStepper.setMaxSpeed( GLUE_ARM_APPLICATION_SPEED );          
-          glueArmIsMoving = true;
-        } else if ( glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
-          glueArmIsMoving = false;
-          glueServoDriver.write( GLUE_RAISED_POSITION );
-          isApplyingGlue = false;
-          fsmState = STATE_MOVE_TO_5;
-        } else {
-          glueArmStepper.run();
-        }
-     }
+    applyGlue( STATE_MOVE_TO_5 );
      break; 
 
      case STATE_MOVE_TO_5:
@@ -299,24 +231,7 @@ void loop() {
        break;
 
    case STATE_APPLY_GLUE_5:
-     if ( !isApplyingGlue ) {
-       glueServoDriver.write( GLUE_APPLICATION_POSITION );
-       delay( 300 );
-       isApplyingGlue = true;
-     } else if ( isApplyingGlue ) {
-        if ( !glueArmIsMoving ) {
-          glueArmStepper.moveTo( 0);
-          glueArmStepper.setMaxSpeed( GLUE_ARM_APPLICATION_SPEED );          
-          glueArmIsMoving = true;
-        } else if ( glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
-          glueArmIsMoving = false;
-          glueServoDriver.write( GLUE_RAISED_POSITION );
-          isApplyingGlue = false;
-          fsmState = STATE_MOVE_TO_READY;
-        } else {
-          glueArmStepper.run();
-        }
-     }
+    applyGlue( STATE_MOVE_TO_READY );
      break;
      
     case STATE_MOVE_TO_READY:
@@ -335,6 +250,30 @@ void loop() {
      Serial.println( "INVALID STATE" );
      break;
   }
+}
 
- 
+void applyGlue( int nextState ) {
+     if ( !isApplyingGlue && abs( glueArmStepper.distanceToGo() ) > 0 ) {
+       glueArmStepper.run();  
+     } else if ( !isApplyingGlue && glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
+       glueArmIsMoving = false;
+       fsmState = nextState;       
+     } else if ( !isApplyingGlue ) {
+       glueServoDriver.write( GLUE_APPLICATION_POSITION );
+       delay( 300 );
+       isApplyingGlue = true;
+     } else if ( isApplyingGlue ) {
+       if ( !glueArmIsMoving ) {
+         glueArmStepper.moveTo( 0 );
+         glueArmStepper.setMaxSpeed( GLUE_ARM_APPLICATION_SPEED );
+         glueArmIsMoving = true;
+        } else if ( glueArmIsMoving ) { 
+          if ( abs( glueArmStepper.distanceToGo() ) > 0 && abs( glueArmStepper.distanceToGo( ) ) < 275 ) {
+           glueServoDriver.write( GLUE_RAISED_POSITION );
+           isApplyingGlue = false;       
+         } else {
+           glueArmStepper.run();
+         }
+       } 
+     }
 }
