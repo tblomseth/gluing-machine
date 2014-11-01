@@ -39,6 +39,7 @@ const int GLUE_ARM_STEPPER_PULSE_LENGTH = 30;
 const float GLUE_ARM_STEPPER_ACCELERATION = 20000;
 const float GLUE_ARM_MAX_SPEED = 5000;
 const float GLUE_ARM_APPLICATION_SPEED = 1000;
+const int GLUE_ARM_EXTEND = 1754;
 
 const int directionPinGlueArmStepper = mePort[ GLUE_ARM_STEPPER_PORT ].s1;//the direction pin connect to Base Board
 const int stepPinGlueArmStepper = mePort[ GLUE_ARM_STEPPER_PORT ].s2;//the Step pin connect to Base Board
@@ -135,7 +136,7 @@ void loop() {
      
    case STATE_GLUE_ARM_FWD:
      if ( !glueArmIsMoving ) {
-       glueArmStepper.move( 1754 );
+       glueArmStepper.move( GLUE_ARM_EXTEND );
        glueArmStepper.setMaxSpeed( GLUE_ARM_MAX_SPEED );
        glueArmIsMoving = true;
      } else if ( glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
@@ -154,7 +155,7 @@ void loop() {
      if ( !carriageIsMoving && !glueArmIsMoving ) {
        carriageStepper.move( 1575 );
        carriageIsMoving = true;
-       glueArmStepper.move( 1754 );
+       glueArmStepper.move( GLUE_ARM_EXTEND );
        glueArmStepper.setMaxSpeed( GLUE_ARM_MAX_SPEED );       
        glueArmIsMoving = true;
      } else if ( carriageIsMoving && carriageStepper.distanceToGo() == 0 && glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
@@ -175,7 +176,7 @@ void loop() {
        if ( !carriageIsMoving && !glueArmIsMoving ) {
          carriageStepper.move( 1575 );
          carriageIsMoving = true;
-         glueArmStepper.move( 1754 );
+         glueArmStepper.move( GLUE_ARM_EXTEND );
          glueArmStepper.setMaxSpeed( GLUE_ARM_MAX_SPEED );         
          glueArmIsMoving = true;
        } else if ( carriageIsMoving && carriageStepper.distanceToGo() == 0 && glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
@@ -196,7 +197,7 @@ void loop() {
        if ( !carriageIsMoving && !glueArmIsMoving ) {
          carriageStepper.move( 1575 );
          carriageIsMoving = true;
-         glueArmStepper.move( 1754 );
+         glueArmStepper.move( GLUE_ARM_EXTEND );
          glueArmStepper.setMaxSpeed( GLUE_ARM_MAX_SPEED );       
          glueArmIsMoving = true;
        } else if ( carriageIsMoving && carriageStepper.distanceToGo() == 0 && glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
@@ -217,7 +218,7 @@ void loop() {
        if ( !carriageIsMoving && !glueArmIsMoving ) {
          carriageStepper.move( 1575 );
          carriageIsMoving = true;
-         glueArmStepper.move( 1754 );
+         glueArmStepper.move( GLUE_ARM_EXTEND );
          glueArmStepper.setMaxSpeed( GLUE_ARM_MAX_SPEED );         
          glueArmIsMoving = true;
        } else if ( carriageIsMoving && carriageStepper.distanceToGo() == 0 && glueArmIsMoving && glueArmStepper.distanceToGo() == 0 ) {
